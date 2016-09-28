@@ -9,7 +9,7 @@ from .forms import *
 
 
 def menu_list(request):
-    all_menus = Menu.objects.all()
+    all_menus = Menu.objects.all().prefetch_related('items')
     menus = []
     for menu in all_menus:
         if(menu.expiration_date is not None and
@@ -21,13 +21,13 @@ def menu_list(request):
 
 
 def menu_detail(request, pk):
-    menu = Menu.objects.get(pk=pk)
+    menu = Menu.objects.prefetch_related('items').get(pk=pk)
     return render(request, 'menu/menu_detail.html', {'menu': menu})
 
 
 def item_detail(request, pk):
     try: 
-        item = Item.objects.get(pk=pk)
+        item = Item.objects.select_related('chef').get(pk=pk)
     except ObjectDoesNotExist:
         raise Http404
     return render(request, 'menu/detail_item.html', {'item': item})
