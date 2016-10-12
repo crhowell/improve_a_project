@@ -92,5 +92,4 @@ ENV/
 .idea/
 
 #SQLite
-*.db
-*.sqlite3
+#*.sqlite3

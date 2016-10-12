@@ -2,7 +2,7 @@ from django import forms
 from .models import Menu
 
 
-def valid_not_empty(data=''):
+def valid_not_empty(data):
     if len(data) < 1:
         raise forms.ValidationError('Must be not be empty')
 
@@ -12,5 +12,5 @@ class MenuForm(forms.ModelForm):
 
     class Meta:
         model = Menu
-        fields = ['items', 'expiration_date']
+        fields = ['season', 'items', 'expiration_date']
         exclude = ('created_date',)
