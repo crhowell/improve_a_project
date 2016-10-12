@@ -1,4 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
+from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.utils import timezone
 from operator import attrgetter
@@ -49,11 +50,12 @@ def create_new_menu(request):
 def edit_menu(request, pk):
     menu = get_object_or_404(Menu, pk=pk)
     items = Item.objects.all()
+
     if request.method == "POST":
-        menu.season = request.POST.get('season', '')
-        menu.expiration_date = datetime.strptime(request.POST.get('expiration_date', ''), '%m/%d/%Y')
-        menu.items = request.POST.get('items', '')
-        menu.save()
+        form = MenuForm(instance=menu, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('menu_list'))
 
     return render(request, 'menu/change_menu.html', {
         'menu': menu,

@@ -1,11 +1,16 @@
 from django import forms
-from django.forms.extras.widgets import SelectDateWidget
+from .models import Menu
 
-from .models import Menu, Item, Ingredient
+
+def valid_not_empty(data=''):
+    if len(data) < 1:
+        raise forms.ValidationError('Must be not be empty')
 
 
 class MenuForm(forms.ModelForm):
+    season = forms.CharField(validators=[valid_not_empty])
 
     class Meta:
         model = Menu
+        fields = ['items', 'expiration_date']
         exclude = ('created_date',)
