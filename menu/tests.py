@@ -27,7 +27,7 @@ class MenuTest(unittest.TestCase):
             name='Cherry soda',
             description='',
             chef=cls.user,
-            created_date=timezone.now,
+            created_date=timezone.now(),
             standard=True
         )
         item.save()
@@ -35,7 +35,7 @@ class MenuTest(unittest.TestCase):
 
         menu = Menu(
             season='Fall 2016',
-            created_date=timezone.now
+            created_date=timezone.now()
         )
         menu.save()
         menu.items.add(item)

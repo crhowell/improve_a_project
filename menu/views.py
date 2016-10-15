@@ -11,13 +11,20 @@ from .forms import *
 
 def menu_list(request):
     all_menus = Menu.objects.all().prefetch_related('items')
-    menus = []
+    exp_menus = []
+    no_exp_menus = []
     for menu in all_menus:
-        if(menu.expiration_date is not None and
-                menu.expiration_date >= timezone.now()):
-            menus.append(menu)
+        if menu.expiration_date is None:
+            no_exp_menus.append(menu)
+            continue
+        if menu.expiration_date >= timezone.now().date():
+            exp_menus.append(menu)
 
-    menus = sorted(menus, key=attrgetter('expiration_date'))
+    exp_menus = sorted(exp_menus, key=attrgetter('expiration_date'), reverse=True)
+
+    # This doesn't work in Python 3 when None is a value in the list.
+    # menus = sorted(menus, key=attrgetter('expiration_date'))
+    menus = exp_menus + no_exp_menus
     return render(request, 'menu/list_all_current_menus.html', {'menus': menus})
 
 
@@ -52,6 +59,7 @@ def edit_menu(request, pk):
     items = Item.objects.all()
 
     if request.method == "POST":
+        print(menu.created_date)
         form = MenuForm(instance=menu, data=request.POST)
         if form.is_valid():
             form.save()
